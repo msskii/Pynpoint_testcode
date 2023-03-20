@@ -21,6 +21,7 @@ junit-py37.xml
 *.nbi
 *.nbc
 pytest.ini
+Data
 
 # Sphinx
 docs/_build
