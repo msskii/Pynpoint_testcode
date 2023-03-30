@@ -51,8 +51,8 @@ sys.path.insert(2, '/Users/Gian/Documents/GitHub/student-code/MRS_PSF_subtractio
 
 
 pipeline = Pypeline(working_place_in='./',
-                    input_place_in='./Data',
-                    output_place_in='./')
+                    input_place_in='../../Data/input',
+                    output_place_in='../../Data/output')
 
 # config = configparser.ConfigParser()
 # config.add_section('header')
@@ -73,7 +73,7 @@ module = FitsReadingModule(name_in='read',
                             ifs_data=False)
 
 pipeline.add_module(module)
-# pipeline.run_module('read')
+pipeline.run_module('read')
 
 import plotter as plot
 
