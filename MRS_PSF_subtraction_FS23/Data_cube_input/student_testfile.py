@@ -47,7 +47,8 @@ from pynpoint import Pypeline, FitsReadingModule, ParangReadingModule, \
                      FakePlanetModule, ContrastCurveModule, Hdf5ReadingModule, \
                      FitsWritingModule, TextWritingModule
 
-sys.path.insert(2, '/Users/Gian/Documents/GitHub/student-code/MRS_PSF_subtraction_FS23/Data_cube_input')
+sys.path.insert(
+    2, '/Users/Gian/Documents/GitHub/Pynpoint_testcode/MRS_PSF_subtraction_FS23/Data_cube_input')
 
 
 pipeline = Pypeline(working_place_in='./',
@@ -65,19 +66,20 @@ pipeline = Pypeline(working_place_in='./',
 #     config.write(configfile)
 
 module = FitsReadingModule(name_in='read',
-                            input_dir=None,
-                            image_tag='testimg',
-                            overwrite=True,
-                            check=True,
-                            filenames=None,
-                            ifs_data=False)
+                           input_dir=None,
+                           image_tag='testimg',
+                           overwrite=True,
+                           check=True,
+                           filenames=None,
+                           ifs_data=False)
 
 pipeline.add_module(module)
 pipeline.run_module('read')
 
 import plotter as plot
 
-plot.plot(pipeline.get_data('testimg')[1],title="testdata",vmax=2000) # vmax is purposely lowered to see the PSF
+# vmax is purposely lowered to see the PSF
+plot.plot(pipeline.get_data('testimg')[1], title="testdata", vmax=2000)
 
 module = PSFpreparationModule(name_in='prep',
                               image_in_tag='testimg',
@@ -85,15 +87,15 @@ module = PSFpreparationModule(name_in='prep',
                               mask_out_tag=None,
                               norm=False,
                               resize=None,
-                              cent_size=0.01,
-                              edge_size=0.1)
+                              cent_size=None,
+                              edge_size=None)
 
 
 pipeline.add_module(module)
-# pipeline.run_module('prep')
+pipeline.run_module('prep')
 
-module = PcaPsfSubtractionModule(pca_numbers=[20, ],
-                                  name_in='pca',
+plot.plot(pipeline.get_data('prep')[1], title="testdata", vmax=2000)
+module = PcaPsfSubtractionModule(name_in='pca',
                                   images_in_tag='prep',
                                   reference_in_tag='prep',
                                   res_median_tag='residuals')
@@ -142,11 +144,11 @@ pipeline.run()
 # # Pynpoint Tutorial 1
 
 # urllib.request.urlretrieve('https://home.strw.leidenuniv.nl/~stolker/pynpoint/betapic_naco_mp.hdf5',
-#                             './Data/betapic_naco_mp.hdf5')
+#                             '../../Data/input/betapic_naco_mp.hdf5')
 
 # pipeline = Pypeline(working_place_in='./',
-#                     input_place_in='./Data',
-#                     output_place_in='./testfile_output')
+#                     input_place_in='../../Data/input',
+#                     output_place_in='../../Data/output')
 
 # module = Hdf5ReadingModule(name_in='read',
 #                             input_filename='betapic_naco_mp.hdf5',
@@ -176,6 +178,8 @@ pipeline.run()
 
 
 # pipeline.run()
+
+# plot.plot(pipeline.get_data('stack')[0], title="testdata", vmax=200)
 
 # residuals = pipeline.get_data('residuals')
 

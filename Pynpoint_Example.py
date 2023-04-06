@@ -1,14 +1,17 @@
 import os
+import sys
 import urllib
 import matplotlib.pyplot as plt
-
+##### User specific path ######
+sys.path.insert(1, '/Users/Gian/Documents/GitHub/Pynpoint')
+###############################
 from pynpoint import Pypeline, Hdf5ReadingModule, PSFpreparationModule, PcaPsfSubtractionModule
 
-urllib.request.urlretrieve('https://home.strw.leidenuniv.nl/~stolker/pynpoint/betapic_naco_mp.hdf5','./in/betapic_naco_mp.hdf5')
+urllib.request.urlretrieve('https://home.strw.leidenuniv.nl/~stolker/pynpoint/betapic_naco_mp.hdf5','./input/betapic_naco_mp.hdf5')
 
 pipeline = Pypeline(working_place_in='./processing',
-                    input_place_in='./in',
-                    output_place_in='./out')
+                    input_place_in='./input',
+                    output_place_in='./output')
 
 module = Hdf5ReadingModule(name_in='read',
                            input_filename='betapic_naco_mp.hdf5',
