@@ -79,7 +79,7 @@ pipeline.run_module('read')
 import plotter as plot
 
 # vmax is purposely lowered to see the PSF
-plot.plot(pipeline.get_data('testimg')[1], title="testdata", vmax=2000)
+plot.plot(pipeline.get_data('testimg')[2], title="testdata", vmax=2000)
 
 module = PSFpreparationModule(name_in='prep',
                               image_in_tag='testimg',

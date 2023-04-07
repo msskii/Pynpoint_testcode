@@ -9,7 +9,7 @@ import numpy as np
 from astropy.io import fits
 
 
-def hducollapser(fits_file):
+def hducollapser(fits_file,out_path):
     """
     Function doesnt allow for multiple datasets in single fits file!
     No errors for no data found, etc.
@@ -33,24 +33,10 @@ def hducollapser(fits_file):
 
     """
     hdu_list = fits.open(fits_file)
-    main = int(0)
-    
-    for i in np.arange(len(hdu_list)):
-        if hdu_list[i].data is not None:
-            main = i
-            images = hdu_list[i].data.byteswap().newbyteorder()
-            break
-
-    images = np.nan_to_num(images)
-
-    header = hdu_list[int(main)].header
-    
-    
-
-    fits_header = []
-    for key in header:
-        fits_header.append(f'{key} = {header[key]}')
-
+    hdr = fits.Header()
+    hdr.extend(hdu_list[0].header)
+    hdr.extend(hdu_list[1].header)
+    data=hdu_list[1].data
     hdu_list.close()
-
-    return header, images.shape
+    fits.writeto(out_path + '/new_fits.fits', data=data,header=hdr)
+    return hdr
