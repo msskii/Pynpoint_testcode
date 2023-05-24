@@ -92,7 +92,7 @@ plt.scatter(wav,std,s=0.1)
 plt.title("Std of flux vs wavelength: sci")
 plt.show()
 
-frame = dat[2000]
+frame = dat[5]
 
 plot(frame,"Raw star data", vmax=500)
 
@@ -115,7 +115,7 @@ plt.scatter(wav,std,s=0.1)
 plt.title("Std of flux vs wavelength: ref")
 plt.show()
 
-frame = dat[2000]
+frame = dat[5]
 
 plot(frame,"Raw ref star data", vmax=100)
 
@@ -139,7 +139,7 @@ plt.scatter(wav,std,s=0.1)
 plt.title("Std of flux vs wavelength: centered sci")
 plt.show()
 
-frame = dat[2000]
+frame = dat[5]
 
 plot(frame,"Centered star", vmax=500)
 
@@ -162,7 +162,7 @@ plt.scatter(wav,std,s=0.1)
 plt.title("Std of flux vs wavelength: centered ref")
 plt.show()
 
-frame = dat[2000]
+frame = dat[5]
 
 plot(frame,"Centered ref star", vmax=100)
 
@@ -185,7 +185,7 @@ plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: normed sci")
 plt.show()
 
-frame = dat[2000]
+frame = dat[5]
 
 plot(frame,"Normed science star", vmax=0.002)
 
@@ -208,7 +208,7 @@ plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: normed ref")
 plt.show()
 
-frame = dat[2000]
+frame = dat[5]
 
 plot(frame,"Normed ref star", vmax=0.002)
 
@@ -216,8 +216,8 @@ plot(frame,"Normed ref star", vmax=0.002)
 # science star padded
 # =============================================================================
 
-dat = pipeline.get_data("normed_pad")
-wav = pipeline.get_attribute("normed_pad","WAV_ARR",static=False)[0].astype(np.float32)
+dat = pipeline.get_data("centered_pad")
+wav = pipeline.get_attribute("centered_pad","WAV_ARR",static=False)[0].astype(np.float32)
 N = dat[:,0,0].size
 avg = np.zeros(N)
 std = np.zeros(N)
@@ -231,16 +231,16 @@ plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: normed&padded sci")
 plt.show()
 
-frame = dat[2000]
+frame = dat[5]
 
-plot(frame,"Normed&padded science star", vmax=0.002)
+plot(frame,"Normed&padded science star", vmax=0.2)
 
 # =============================================================================
 # ref star padded
 # =============================================================================
 
-dat = pipeline.get_data("normed_ref_pad")
-wav = pipeline.get_attribute("normed_ref_pad","WAV_ARR",static=False)[0].astype(np.float32)
+dat = pipeline.get_data("centered_ref_pad")
+wav = pipeline.get_attribute("centered_ref_pad","WAV_ARR",static=False)[0].astype(np.float32)
 N = dat[:,0,0].size
 avg = np.zeros(N)
 std = np.zeros(N)
@@ -254,9 +254,9 @@ plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: normed&padded ref")
 plt.show()
 
-frame = dat[2000]
+frame = dat[5]
 
-plot(frame,"Normed&padded ref star", vmax=0.002)
+plot(frame,"Normed&padded ref star", vmax=0.2)
 
 # =============================================================================
 # Residual
@@ -277,6 +277,6 @@ plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: Residual")
 plt.show()
 
-frame = np.abs(dat[2000])
+frame = np.abs(dat[5])
 
-plot(frame,"Residual of simple star subtraction", vmax=0.002)
+plot(frame,"Residual of simple star subtraction", vmax=0.2)
