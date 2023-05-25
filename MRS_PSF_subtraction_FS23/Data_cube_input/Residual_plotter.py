@@ -93,8 +93,9 @@ plt.title("Std of flux vs wavelength: sci")
 plt.show()
 
 frame = dat[5]
+avg = np.average(frame)
 
-cplot(frame,"Raw star data", vmax=500)
+cplot(frame,"Raw star data", vmax=avg)
 
 # =============================================================================
 # reference star
@@ -116,9 +117,58 @@ plt.title("Std of flux vs wavelength: ref")
 plt.show()
 
 frame = dat[5]
+avg = np.average(frame)
 
-cplot(frame,"Raw ref star data", vmax=100)
+cplot(frame,"Raw ref star data", vmax=avg)
 
+
+# =============================================================================
+# science star padded
+# =============================================================================
+
+dat = pipeline.get_data("science_pad")
+wav = pipeline.get_attribute("science_pad","WAV_ARR",static=False)[0].astype(np.float32)
+N = dat[:,0,0].size
+avg = np.zeros(N)
+std = np.zeros(N)
+for i in np.arange(N):
+    avg[i] = np.average(dat[i])
+    std[i] = np.std(dat[i])
+plt.scatter(wav,avg,s=0.1)
+plt.title("Average flux vs wavelength: padded sci")
+plt.show()
+plt.scatter(wav,std,s=0.1)
+plt.title("Std of flux vs wavelength: padded sci")
+plt.show()
+
+frame = dat[5]
+avg = np.average(frame)
+
+cplot(frame,"Padded star", vmax=avg)
+
+# =============================================================================
+# reference star centered
+# =============================================================================
+
+dat = pipeline.get_data("ref_pad")
+wav = pipeline.get_attribute("ref_pad","WAV_ARR",static=False)[0].astype(np.float32)
+N = dat[:,0,0].size
+avg = np.zeros(N)
+std = np.zeros(N)
+for i in np.arange(N):
+    avg[i] = np.average(dat[i])
+    std[i] = np.std(dat[i])
+plt.scatter(wav,avg,s=0.1)
+plt.title("Average flux vs wavelength: padded ref")
+plt.show()
+plt.scatter(wav,std,s=0.1)
+plt.title("Std of flux vs wavelength: padded ref")
+plt.show()
+
+frame = dat[5]
+avg = np.average(frame)
+
+cplot(frame,"Padded ref star", vmax=avg)
 
 # =============================================================================
 # science star centered
@@ -132,19 +182,20 @@ std = np.zeros(N)
 for i in np.arange(N):
     avg[i] = np.average(dat[i])
     std[i] = np.std(dat[i])
-plt.scatter(wav,avg,s=0.1)
+plt.scatter(wav,avg,s=1)
 plt.title("Average flux vs wavelength: centered sci")
 plt.show()
-plt.scatter(wav,std,s=0.1)
+plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: centered sci")
 plt.show()
 
 frame = dat[5]
+avg = np.average(frame)
 
-cplot(frame,"Centered star", vmax=500)
+cplot(frame,"Centered science star", vmax=avg)
 
 # =============================================================================
-# reference star centered
+# ref star centered
 # =============================================================================
 
 dat = pipeline.get_data("centered_ref")
@@ -155,16 +206,17 @@ std = np.zeros(N)
 for i in np.arange(N):
     avg[i] = np.average(dat[i])
     std[i] = np.std(dat[i])
-plt.scatter(wav,avg,s=0.1)
+plt.scatter(wav,avg,s=1)
 plt.title("Average flux vs wavelength: centered ref")
 plt.show()
-plt.scatter(wav,std,s=0.1)
+plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: centered ref")
 plt.show()
 
 frame = dat[5]
+avg = np.average(frame)
 
-cplot(frame,"Centered ref star", vmax=100)
+cplot(frame,"Centered ref star", vmax=avg)
 
 # =============================================================================
 # science star normed
@@ -186,8 +238,9 @@ plt.title("Std of flux vs wavelength: normed sci")
 plt.show()
 
 frame = dat[5]
+avg = np.average(frame)
 
-cplot(frame,"Normed science star", vmax=0.002)
+cplot(frame,"Normed science star", vmax=avg)
 
 # =============================================================================
 # ref star normed
@@ -209,54 +262,9 @@ plt.title("Std of flux vs wavelength: normed ref")
 plt.show()
 
 frame = dat[5]
+avg = np.average(frame)
 
-cplot(frame,"Normed ref star", vmax=0.002)
-
-# =============================================================================
-# science star padded
-# =============================================================================
-
-dat = pipeline.get_data("centered_pad")
-wav = pipeline.get_attribute("centered_pad","WAV_ARR",static=False)[0].astype(np.float32)
-N = dat[:,0,0].size
-avg = np.zeros(N)
-std = np.zeros(N)
-for i in np.arange(N):
-    avg[i] = np.average(dat[i])
-    std[i] = np.std(dat[i])
-plt.scatter(wav,avg,s=1)
-plt.title("Average flux vs wavelength: normed&padded sci")
-plt.show()
-plt.scatter(wav,std,s=1)
-plt.title("Std of flux vs wavelength: normed&padded sci")
-plt.show()
-
-frame = dat[5]
-
-cplot(frame,"Normed&padded science star", vmax=0.2)
-
-# =============================================================================
-# ref star padded
-# =============================================================================
-
-dat = pipeline.get_data("centered_ref_pad")
-wav = pipeline.get_attribute("centered_ref_pad","WAV_ARR",static=False)[0].astype(np.float32)
-N = dat[:,0,0].size
-avg = np.zeros(N)
-std = np.zeros(N)
-for i in np.arange(N):
-    avg[i] = np.average(dat[i])
-    std[i] = np.std(dat[i])
-plt.scatter(wav,avg,s=1)
-plt.title("Average flux vs wavelength: normed&padded ref")
-plt.show()
-plt.scatter(wav,std,s=1)
-plt.title("Std of flux vs wavelength: normed&padded ref")
-plt.show()
-
-frame = dat[5]
-
-cplot(frame,"Normed&padded ref star", vmax=0.2)
+cplot(frame,"Normed ref star", vmax=avg)
 
 # =============================================================================
 # Residual
@@ -279,5 +287,6 @@ plt.show()
 
 for i in np.arange(dat.size):
     frame = dat[i]
+    avg = np.average(frame)
 
-    cplot(frame,"Residual of simple star subtraction", vmax=0.2)
+    cplot(frame,"Residual of simple star subtraction", vmax=avg)
