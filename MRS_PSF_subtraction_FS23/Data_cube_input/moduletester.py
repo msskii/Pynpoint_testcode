@@ -27,6 +27,7 @@ from ifupcasubtraction import IFUResidualsPCAModule
 from ifuresizing import UnfoldingModule
 from IFS_basic_subtraction import IFS_ClassicalRefSubstraction
 from center_guess import StarCenterFixedGauss
+from IFS_SimpleSubtraction import IFS_normalizeSpectrum
 
 from pynpoint import Pypeline, WavelengthReadingModule, FitsReadingModule, \
                     FitCenterModule, ShiftImagesModule, RemoveLinesModule, StackCubesModule, \
@@ -71,29 +72,29 @@ pipeline.run_module("bear")
 
 dog = pipeline.get_data("rawdog_pad")
 cat = pipeline.get_data("rawcat_pad")
+cplot(dog[0],"OG dog",vmax=15000)
+# shits = ShiftImagesModule(name_in='shit',
+#                           image_in_tag='rawdog_pad',
+#                           shift_xy=(0,-6),
+#                           image_out_tag='centereddawg')
 
-shits = ShiftImagesModule(name_in='shit',
-                          image_in_tag='rawdog',
-                          shift_xy=(5,-7),
-                          image_out_tag='centereddawg')
+# pipeline.add_module(shits)
+# pipeline.run_module('shit')
+# dogshit = pipeline.get_data('centereddawg')
+# cplot(dogshit[0],"Doggy style shit",vmax=15000)
+# # pdb.set_trace()
+# shifter = StarCenterFixedGauss(dogshit,plot_star=False,plot_gauss_aligned=False,A=1,bounds=(15,10))
 
-pipeline.add_module(shits)
-pipeline.run_module('shit')
-dogshit = pipeline.get_data('centereddawg')
-cplot(dogshit[0],"Doggy style shit",vmax=15000)
+# shift = ShiftImagesModule(name_in='shifterz',
+#                           image_in_tag='centereddawg',
+#                           shift_xy=shifter,
+#                           image_out_tag='centereddogs')
+# pipeline.add_module(shift)
+# pipeline.run_module('shifterz')
+# doggy = pipeline.get_data("centereddogs")
+# print("##############HERE##########")
+# cplot(doggy[27],"Doggy",vmax=15000)
 # pdb.set_trace()
-shifter = StarCenterFixedGauss(dogshit,plot_star=False,plot_gauss_aligned=False,A=1,bounds=(15,10))
-
-shift = ShiftImagesModule(name_in='shifterz',
-                          image_in_tag='centereddawg',
-                          shift_xy=shifter,
-                          image_out_tag='centereddogs')
-pipeline.add_module(shift)
-pipeline.run_module('shifterz')
-doggy = pipeline.get_data("centereddogs")
-print("##############HERE##########")
-cplot(doggy[27],"Doggy",vmax=15000)
-
 
 shifter = StarCenterFixedGauss(dog,plot_star=False,plot_gauss_aligned=False,A=1)
 shifter2 = StarCenterFixedGauss(cat)
@@ -117,18 +118,28 @@ cplot(centered,"blob",vmax=15000)
 centered = pipeline.get_data("centeredcat")[27]
 cplot(centered,"blob",vmax=15000)
 
+module = IFS_normalizeSpectrum(name_in='norm',
+                               image_in_tag='centereddog',
+                               image_out_tag='normed')
+pipeline.add_module(module)
+pipeline.run_module('norm')
 
-# pdb.set_trace()
+module = IFS_normalizeSpectrum(name_in='norm_ref',
+                               image_in_tag='centeredcat',
+                               image_out_tag='normedc')
+pipeline.add_module(module)
+pipeline.run_module('norm_ref')
 
 subtr = IFS_ClassicalRefSubstraction(name_in = "sub", 
-                                     image_in_tags=["centereddog_pad","centeredcat_pad"], 
+                                     image_in_tags=["normed","normedc"], 
                                      image_out_tag="residual")
 pipeline.add_module(subtr)
-
+pipeline.run_module("sub")
 
 # pdb.set_trace()
-pipeline.run()
+# pipeline.run()
 X = pipeline.get_data("residual")
+cplot(X[0],"it is whawt is ts",vmax=15000)
 print(X)
 
 # Collapser = PrimaryHDUCombiner(name_in = "collagen", 
