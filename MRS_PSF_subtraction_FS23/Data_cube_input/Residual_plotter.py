@@ -24,7 +24,7 @@ import numpy as np
 
 sys.path.append("/Users/Gian/Documents/Github/Pynpoint_ifs/background_files")
 sys.path.append('/Users/Gian/Documents/GitHub/Pynpoint')
-sys.path.append("/Users/Gian/Documents/GitHub/ASL-Variable_Stars/Code")
+# sys.path.append("/Users/Gian/Documents/GitHub/ASL-Variable_Stars/Code")
 
 #from spectres import spectres
 from ifuframeselection import SelectWavelengthRangeModule
@@ -67,24 +67,24 @@ output_place_in = "/Users/Gian/Documents/GitHub/Pynpoint_testcode/Data/output"
 
 pipeline = Pypeline(working_place_in, input_place_in, output_place_in)
 
-# module = IFS_normalizeSpectrum(name_in='norm_ref',
-#                                image_in_tag='centered_ref',
-#                                image_out_tag='normed_ref')
-# pipeline.add_module(module)
-# pipeline.run()
+# Set the wavelength for which all the plots are created (i.e. set the index between 0 and the size of the cube):
+K = 11000
+# Choose whether the maximum scale of the plots should be chosen as the average (avg_max=True) or the percentage p of the maximum (avg_max=False):
+avg_max = False
+p = 0.7
 
 # =============================================================================
 # science target
 # =============================================================================
 
-dat = pipeline.get_data("science")
+sci = pipeline.get_data("science")
 wav = pipeline.get_attribute("science","WAV_ARR",static=False)[0].astype(np.float32)
-N = dat[:,0,0].size
+N = sci[:,0,0].size
 avg = np.zeros(N)
 std = np.zeros(N)
 for i in np.arange(N):
-    avg[i] = np.average(dat[i])
-    std[i] = np.std(dat[i])
+    avg[i] = np.average(sci[i])
+    std[i] = np.std(sci[i])
 plt.scatter(wav,avg,s=0.1)
 plt.title("Average flux vs wavelength: sci")
 plt.show()
@@ -92,23 +92,26 @@ plt.scatter(wav,std,s=0.1)
 plt.title("Std of flux vs wavelength: sci")
 plt.show()
 
-frame = dat[5]
+frame = sci[K]
 avg = np.average(frame)
 
-cplot(frame,"Raw star data", vmax=avg)
+if avg_max:
+    cplot(frame,"Raw star data", vmin=0, vmax=avg)
+else:
+    cplot(frame,"Raw star data", vmin=0, vmax=p*frame.max())
 
 # =============================================================================
 # reference star
 # =============================================================================
 
-dat = pipeline.get_data("ref")
+ref = pipeline.get_data("ref")
 wav = pipeline.get_attribute("ref","WAV_ARR",static=False)[0].astype(np.float32)
-N = dat[:,0,0].size
+N = ref[:,0,0].size
 avg = np.zeros(N)
 std = np.zeros(N)
 for i in np.arange(N):
-    avg[i] = np.average(dat[i])
-    std[i] = np.std(dat[i])
+    avg[i] = np.average(ref[i])
+    std[i] = np.std(ref[i])
 plt.scatter(wav,avg,s=0.1)
 plt.title("Average flux vs wavelength: ref")
 plt.show()
@@ -116,11 +119,13 @@ plt.scatter(wav,std,s=0.1)
 plt.title("Std of flux vs wavelength: ref")
 plt.show()
 
-frame = dat[5]
+frame = ref[K]
 avg = np.average(frame)
 
-cplot(frame,"Raw ref star data", vmax=avg)
-
+if avg_max:
+    cplot(frame,"Raw ref star data",vmin=0,  vmax=avg)
+else:
+    cplot(frame,"Raw ref star data",vmin=0,  vmax=p*frame.max())
 
 # =============================================================================
 # science star padded
@@ -141,10 +146,13 @@ plt.scatter(wav,std,s=0.1)
 plt.title("Std of flux vs wavelength: padded sci")
 plt.show()
 
-frame = dat[5]
+frame = dat[K]
 avg = np.average(frame)
 
-cplot(frame,"Padded star", vmax=avg)
+if avg_max:
+    cplot(frame,"Padded star",vmin=0,  vmax=avg)
+else:
+    cplot(frame,"Padded star",vmin=0,  vmax=p*frame.max())
 
 # =============================================================================
 # reference star centered
@@ -165,10 +173,13 @@ plt.scatter(wav,std,s=0.1)
 plt.title("Std of flux vs wavelength: padded ref")
 plt.show()
 
-frame = dat[5]
+frame = dat[K]
 avg = np.average(frame)
 
-cplot(frame,"Padded ref star", vmax=avg)
+if avg_max:
+    cplot(frame,"Padded ref star",vmin=0,  vmax=avg)
+else:
+    cplot(frame,"Padded ref star",vmin=0,  vmax=p*frame.max())
 
 # =============================================================================
 # science star centered
@@ -189,10 +200,14 @@ plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: centered sci")
 plt.show()
 
-frame = dat[5]
+frame = dat[K]
 avg = np.average(frame)
 
-cplot(frame,"Centered science star", vmax=avg)
+if avg_max:
+    cplot(frame,"Centered science star",vmin=0,  vmax=avg)
+else:
+    cplot(frame,"Centered science star",vmin=0,  vmax=p*frame.max())
+
 
 # =============================================================================
 # ref star centered
@@ -213,10 +228,14 @@ plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: centered ref")
 plt.show()
 
-frame = dat[5]
+frame = dat[K]
 avg = np.average(frame)
 
-cplot(frame,"Centered ref star", vmax=avg)
+
+if avg_max:
+    cplot(frame,"Centered ref star",vmin=0,  vmax=avg)
+else:
+    cplot(frame,"Centered ref star",vmin=0,  vmax=p*frame.max())
 
 # =============================================================================
 # science star normed
@@ -237,10 +256,13 @@ plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: normed sci")
 plt.show()
 
-frame = dat[5]
+frame = dat[K]
 avg = np.average(frame)
 
-cplot(frame,"Normed science star", vmax=avg)
+if avg_max:
+    cplot(frame,"Normed science star",vmin=0,  vmax=avg)
+else:
+    cplot(frame,"Normed science star",vmin=0,  vmax=p*frame.max())
 
 # =============================================================================
 # ref star normed
@@ -261,10 +283,13 @@ plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: normed ref")
 plt.show()
 
-frame = dat[5]
+frame = dat[K]
 avg = np.average(frame)
 
-cplot(frame,"Normed ref star", vmax=avg)
+if avg_max:
+    cplot(frame,"Normed ref star",vmin=0,  vmax=avg)
+else:
+    cplot(frame,"Normed ref star",vmin=0,  vmax=p*frame.max())
 
 # =============================================================================
 # Residual
@@ -285,8 +310,16 @@ plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: Residual")
 plt.show()
 
-for i in np.arange(dat.size):
-    frame = dat[i]
-    avg = np.average(frame)
+frame = dat[K]
+avg = np.average(frame)
 
+if avg_max:
     cplot(frame,"Residual of simple star subtraction", vmax=avg)
+else:
+    cplot(frame,"Residual of simple star subtraction", vmax=p*frame.max())
+
+# for i in np.arange(dat.size):
+#     frame = dat[i]
+#     avg = np.average(frame)
+
+#     cplot(frame,"Residual of simple star subtraction", vmax=avg)

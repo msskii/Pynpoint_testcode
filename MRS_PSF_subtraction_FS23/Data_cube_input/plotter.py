@@ -11,9 +11,11 @@ def plot(data, title, vmax=200, show=True):
     if show:
         plt.show()
 
-def cplot(data, title, vmax=200, show=True):
+def cplot(data, title, vmin=None, vmax=200, show=True):
+    if vmin==None:
+        vmin = -vmax
     data = np.array(data, dtype=np.float64) - float(np.median(data))
-    plt.imshow(data, cmap='RdBu', vmin=-vmax, vmax=vmax)
+    plt.imshow(data, cmap='RdBu', vmin=vmin, vmax=vmax)
     plt.gca().invert_yaxis()
     plt.colorbar()
     plt.title(title)
