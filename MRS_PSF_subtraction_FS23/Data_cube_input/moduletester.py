@@ -4,6 +4,7 @@ testfile to check any modules
 import sys
 import os
 import pdb
+import numpy as np
 
 #########################
 # User specific path
@@ -25,6 +26,7 @@ from ifucrosscorrelation import CrossCorrelationModule
 from ifupcasubtraction import IFUResidualsPCAModule
 from ifuresizing import UnfoldingModule
 from IFS_basic_subtraction import IFS_ClassicalRefSubstraction
+from center_guess import StarCenterFixedGauss
 
 from pynpoint import Pypeline, WavelengthReadingModule, FitsReadingModule, \
                     FitCenterModule, ShiftImagesModule, RemoveLinesModule, StackCubesModule, \
@@ -33,7 +35,9 @@ from pynpoint import Pypeline, WavelengthReadingModule, FitsReadingModule, \
                     PrimaryHDUCombiner, PaddingModule, MultiChannelReader
 
 
+
 from scratch_primaryhducombiner import hducollapser
+from plotter import cplot
 
 # pdb.set_trace()
 
@@ -55,41 +59,66 @@ reader2 = MultiChannelReader(name_in="read2",
 pipeline.add_module(reader1)
 pipeline.add_module(reader2)
 
-center = FitCenterModule(name_in='center_all',
-                                  image_in_tag='rawdog',
-                                  fit_out_tag='shiftdog',
-                                  mask_radii=(0,0.5),
-                                  method='full',
-                                  guess=(5., -2., 1., 1., 16000., 0., 0.))
 
-center2 = FitCenterModule(name_in='center_ref',
-                                  image_in_tag='rawcat',
-                                  fit_out_tag='shiftcat',
-                                  mask_radii=(0,0.5),
-                                  method='full',
-                                  guess=(5., -2., 1., 1., 16000., 0., 0.))
+pipeline.run_module("read")
+pipeline.run_module("read2")
 
-pipeline.add_module(center)
-pipeline.add_module(center2)
+paddingtonbear = PaddingModule(name_in="bear",
+                               image_in_tags=["rawdog","rawcat"],
+                               image_out_suff="pad")
+pipeline.add_module(paddingtonbear)
+pipeline.run_module("bear")
+
+dog = pipeline.get_data("rawdog_pad")
+cat = pipeline.get_data("rawcat_pad")
+
+shits = ShiftImagesModule(name_in='shit',
+                          image_in_tag='rawdog',
+                          shift_xy=(5,-7),
+                          image_out_tag='centereddawg')
+
+pipeline.add_module(shits)
+pipeline.run_module('shit')
+dogshit = pipeline.get_data('centereddawg')
+cplot(dogshit[0],"Doggy style shit",vmax=15000)
+# pdb.set_trace()
+shifter = StarCenterFixedGauss(dogshit,plot_star=False,plot_gauss_aligned=False,A=1,bounds=(15,10))
+
+shift = ShiftImagesModule(name_in='shifterz',
+                          image_in_tag='centereddawg',
+                          shift_xy=shifter,
+                          image_out_tag='centereddogs')
+pipeline.add_module(shift)
+pipeline.run_module('shifterz')
+doggy = pipeline.get_data("centereddogs")
+print("##############HERE##########")
+cplot(doggy[27],"Doggy",vmax=15000)
+
+
+shifter = StarCenterFixedGauss(dog,plot_star=False,plot_gauss_aligned=False,A=1)
+shifter2 = StarCenterFixedGauss(cat)
 
 shift = ShiftImagesModule(name_in='shift',
-                                    image_in_tag='rawdog',
-                                    shift_xy='shiftdog',
-                                    image_out_tag='centereddog')
-pipeline.add_module(shift)
-
+                          image_in_tag='rawdog_pad',
+                          shift_xy=shifter,
+                          image_out_tag='centereddog')
 shift2 = ShiftImagesModule(name_in='shift2',
-                                    image_in_tag='rawcat',
-                                    shift_xy='shiftcat',
-                                    image_out_tag='centeredcat')
+                          image_in_tag='rawcat_pad',
+                          shift_xy=shifter2,
+                          image_out_tag='centeredcat')
+
+pipeline.add_module(shift)
 pipeline.add_module(shift2)
+pipeline.run_module('shift')
+pipeline.run_module("shift2")
+
+centered = pipeline.get_data("centereddog")[27]
+cplot(centered,"blob",vmax=15000)
+centered = pipeline.get_data("centeredcat")[27]
+cplot(centered,"blob",vmax=15000)
 
 
 # pdb.set_trace()
-paddingtonbear = PaddingModule(name_in="bear",
-                               image_in_tags=["centereddog","centeredcat"],
-                               image_out_suff="pad")
-pipeline.add_module(paddingtonbear)
 
 subtr = IFS_ClassicalRefSubstraction(name_in = "sub", 
                                      image_in_tags=["centereddog_pad","centeredcat_pad"], 

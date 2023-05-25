@@ -44,7 +44,7 @@ from pynpoint import MultiChannelReader, ShiftImagesModule, PaddingModule
 from IFS_Plot import PlotCenterDependantWavelength, PlotSpectrum
 from IFS_SimpleSubtraction import IFS_normalizeSpectrum
 
-from plotter import plot
+from plotter import plot, cplot
 import matplotlib.pyplot as plt
 
 # pdb.set_trace()
@@ -94,7 +94,7 @@ plt.show()
 
 frame = dat[5]
 
-plot(frame,"Raw star data", vmax=500)
+cplot(frame,"Raw star data", vmax=500)
 
 # =============================================================================
 # reference star
@@ -117,7 +117,7 @@ plt.show()
 
 frame = dat[5]
 
-plot(frame,"Raw ref star data", vmax=100)
+cplot(frame,"Raw ref star data", vmax=100)
 
 
 # =============================================================================
@@ -141,7 +141,7 @@ plt.show()
 
 frame = dat[5]
 
-plot(frame,"Centered star", vmax=500)
+cplot(frame,"Centered star", vmax=500)
 
 # =============================================================================
 # reference star centered
@@ -164,7 +164,7 @@ plt.show()
 
 frame = dat[5]
 
-plot(frame,"Centered ref star", vmax=100)
+cplot(frame,"Centered ref star", vmax=100)
 
 # =============================================================================
 # science star normed
@@ -187,7 +187,7 @@ plt.show()
 
 frame = dat[5]
 
-plot(frame,"Normed science star", vmax=0.002)
+cplot(frame,"Normed science star", vmax=0.002)
 
 # =============================================================================
 # ref star normed
@@ -210,7 +210,7 @@ plt.show()
 
 frame = dat[5]
 
-plot(frame,"Normed ref star", vmax=0.002)
+cplot(frame,"Normed ref star", vmax=0.002)
 
 # =============================================================================
 # science star padded
@@ -233,7 +233,7 @@ plt.show()
 
 frame = dat[5]
 
-plot(frame,"Normed&padded science star", vmax=0.2)
+cplot(frame,"Normed&padded science star", vmax=0.2)
 
 # =============================================================================
 # ref star padded
@@ -256,7 +256,7 @@ plt.show()
 
 frame = dat[5]
 
-plot(frame,"Normed&padded ref star", vmax=0.2)
+cplot(frame,"Normed&padded ref star", vmax=0.2)
 
 # =============================================================================
 # Residual
@@ -277,6 +277,7 @@ plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: Residual")
 plt.show()
 
-frame = np.abs(dat[5])
+for i in np.arange(dat.size):
+    frame = dat[i]
 
-plot(frame,"Residual of simple star subtraction", vmax=0.2)
+    cplot(frame,"Residual of simple star subtraction", vmax=0.2)
