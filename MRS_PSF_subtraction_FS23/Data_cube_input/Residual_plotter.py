@@ -62,16 +62,16 @@ import matplotlib.pyplot as plt
 
 # Define Directories
 working_place_in = "/Users/Gian/Documents/GitHub/Pynpoint_testcode/MRS_PSF_subtraction_FS23/Data_cube_input"
-input_place_in = "/Users/Gian/Documents/JWST_Central-Database/cubes_obs3_red_red"
+input_place_in = "/Users/Gian/Documents/JWST_Central-Database/Full_cubes/1536/cubes_obs22"
 output_place_in = "/Users/Gian/Documents/GitHub/Pynpoint_testcode/Data/output"
 
 pipeline = Pypeline(working_place_in, input_place_in, output_place_in)
 
 # Set the wavelength for which all the plots are created (i.e. set the index between 0 and the size of the cube):
-K = 11000
+K = 6000
 # Choose whether the maximum scale of the plots should be chosen as the average (avg_max=True) or the percentage p of the maximum (avg_max=False):
 avg_max = False
-p = 0.7
+p = 0.1
 
 # =============================================================================
 # science target
@@ -317,6 +317,9 @@ if avg_max:
     cplot(frame,"Residual of simple star subtraction", vmax=avg)
 else:
     cplot(frame,"Residual of simple star subtraction", vmax=p*frame.max())
+
+
+print(f'Wavelength = {wav[K]}')
 
 # for i in np.arange(dat.size):
 #     frame = dat[i]

@@ -43,7 +43,7 @@ from plotter import plot
 # pdb.set_trace()
 
 file_path = '/Users/Gian/Documents/GitHub/Pynpoint_testcode/Data/input/Level3_ch1-long_s3d.fits'
-in_path = '/Users/Gian/Documents/JWST_Central-Database/cubes_obs3_red_red'
+in_path = '/Users/Gian/Documents/JWST_Central-Database/Reduced_cubes/cubes_obs3_red_red'
 work_path = '/Users/Gian/Documents/GitHub/Pynpoint_testcode/MRS_PSF_subtraction_FS23/Data_cube_input'
 out_path = '/Users/Gian/Documents/GitHub/Pynpoint_testcode/Data/output/cubes_obs3'
 
@@ -55,7 +55,7 @@ reader1 = MultiChannelReader(name_in="read",
                             input_dir=in_path,
                             image_tag="rawdog")
 reader2 = MultiChannelReader(name_in="read2",
-                             input_dir='/Users/Gian/Documents/JWST_Central-Database/cubes_obs9_red_red',
+                             input_dir='/Users/Gian/Documents/JWST_Central-Database/Reduced_cubes/cubes_obs9_red_red',
                              image_tag="rawcat")
 pipeline.add_module(reader1)
 pipeline.add_module(reader2)
@@ -96,12 +96,12 @@ U,S,V = np.linalg.svd(data1,full_matrices=False)
 # plot(V,"V",vmax=1)
 plot(trip_Matmul(U,S,V),"svd",vmax=0.005)
 S_red1 = np.zeros_like(S)
-cut = 4
+cut = 1
 S_red1[0:cut] = S[0:cut]
 plot(trip_Matmul(U,S_red1,V),f'{cut} PC',vmax=0.005)
 
 S_red2 = np.zeros_like(S)
-cut = 4
+cut = 1
 
 
 U,S,V = np.linalg.svd(data2,full_matrices=False)
@@ -112,7 +112,7 @@ U,S,V = np.linalg.svd(data2,full_matrices=False)
 # plot(V,"V",vmax=1)
 # plot(trip_Matmul(U,S,V),"svd",vmax=2000)
 S_red1 = np.zeros_like(S)
-cut = 4
+cut = 1
 S_red1[0:cut] = S[0:cut]
 plot(trip_Matmul(U,S_red1,V),f'{cut} PC',vmax=0.005)
 # # model = np.concatenate((data1_arr, data2_arr), axis=0)
