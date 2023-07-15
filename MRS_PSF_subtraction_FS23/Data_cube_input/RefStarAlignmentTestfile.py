@@ -27,7 +27,7 @@ from ifupcasubtraction import IFUResidualsPCAModule
 from ifuresizing import UnfoldingModule
 from IFS_basic_subtraction import IFS_ClassicalRefSubstraction
 from center_guess import StarCenterFixedGauss, IFS_RefStarAlignment
-from IFS_SimpleSubtraction import IFS_normalizeSpectrum, IFS_binning
+from IFS_SimpleSubtraction import IFS_normalizeSpectrum
 
 from pynpoint import Pypeline, WavelengthReadingModule, FitsReadingModule, \
                     FitCenterModule, ShiftImagesModule, RemoveLinesModule, StackCubesModule, \
@@ -113,42 +113,30 @@ module = IFS_normalizeSpectrum(name_in='norm_ref',
 pipeline.add_module(module)
 pipeline.run_module("norm_ref")
 
-bins = 10
-module = IFS_binning(name_in="bin", image_in_tag="normed", image_out_tag="binned",bin_size=bins)
-pipeline.add_module(module)
-pipeline.run_module("bin")
-
-module = IFS_binning(name_in="bin_ref", image_in_tag="normed_ref", image_out_tag="binned_ref",bin_size=bins)
-pipeline.add_module(module)
-pipeline.run_module("bin_ref")
-
-module = IFS_RefStarAlignment(name_in="align", sci_in_tag="binned", ref_in_tags="binned_ref", fit_out_tag_suff="al")
-pipeline.add_module(module)
-pipeline.run_module("align")
-
-module = IFS_ClassicalRefSubstraction(name_in="subtr", image_in_tags=["binned","binned_ref_al"], image_out_tag="residual")
-pipeline.add_module(module)
-pipeline.run_module("subtr")
-
-sci = pipeline.get_data("cube3")
-ref = pipeline.get_data("cube9")
-norm = pipeline.get_data("normed")
-norf = pipeline.get_data("normed_ref")
-bi = pipeline.get_data("binned")
-birf = pipeline.get_data("binned_ref")
-birfal = pipeline.get_data("binned_ref_al")
-res = pipeline.get_data("residual")
-
-k=2000
-A = 0.8
-kb = int(np.floor(k/bins))
-cplot(sci[k],"Science",vmax=A*sci[k].max())
-cplot(ref[k],"ref",vmax=A*ref[k].max())
-cplot(norm[k],"norm",vmax=A*norm[k].max())
-cplot(norf[k],"norm ref",vmax=A*norf[k].max())
-cplot(bi[kb],"binned",vmax=A*bi[kb].max())
-cplot(birf[kb],"binned ref",vmax=A*birf[kb].max())
-cplot(birfal[kb],"aligned ref",vmax=A*birfal[kb].max())
-cplot(res[kb],"residual",vmax=A*res[kb].max())
 
 
+
+# pdb.set_trace()
+
+
+test = IFS_RefStarAlignment(name_in="aligner", 
+                            sci_in_tag="normed", 
+                            ref_in_tags="normed_ref", 
+                            fit_out_tag_suff="opt",
+                            qual_method = "L2",
+                            in_rad = 0.8,
+                            out_rad = 2.5,
+                            apertshap = "Circle")
+pipeline.add_module(test)
+pipeline.run_module("aligner")
+
+sci = pipeline.get_data("normed")
+ref = pipeline.get_data("normed_ref")
+opt_ref = pipeline.get_data("normed_ref_opt")
+
+k = int(0)
+cplot(sci[k],"Science", vmax=0.005)
+cplot(ref[k],"Ref", vmax=0.005)
+cplot(opt_ref[k],"Optim ref", vmax=0.005)
+cplot(sci[k]-ref[k],"Sci - Ref", vmax=0.005)
+cplot(sci[k]-opt_ref[k],"Sci - Optim ref", vmax=0.005)

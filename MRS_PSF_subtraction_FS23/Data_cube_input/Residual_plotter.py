@@ -68,7 +68,8 @@ output_place_in = "/Users/Gian/Documents/GitHub/Pynpoint_testcode/Data/output"
 pipeline = Pypeline(working_place_in, input_place_in, output_place_in)
 
 # Set the wavelength for which all the plots are created (i.e. set the index between 0 and the size of the cube):
-K = 6000
+K = 100
+bins = 10
 # Choose whether the maximum scale of the plots should be chosen as the average (avg_max=True) or the percentage p of the maximum (avg_max=False):
 avg_max = False
 p = 0.1
@@ -290,6 +291,92 @@ if avg_max:
     cplot(frame,"Normed ref star",vmin=0,  vmax=avg)
 else:
     cplot(frame,"Normed ref star",vmin=0,  vmax=p*frame.max())
+    
+# =============================================================================
+# science binned
+# =============================================================================
+K_bin = int(K/bins)
+
+
+dat = pipeline.get_data("binned")
+wav = pipeline.get_attribute("binned","WAV_ARR",static=False)[0].astype(np.float32)
+N = dat[:,0,0].size
+avg = np.zeros(N)
+std = np.zeros(N)
+for i in np.arange(N):
+    avg[i] = np.average(dat[i])
+    std[i] = np.std(dat[i])
+plt.scatter(wav,avg,s=1)
+plt.title("Average flux vs wavelength: binned")
+plt.show()
+plt.scatter(wav,std,s=1)
+plt.title("Std of flux vs wavelength: binned")
+plt.show()
+
+frame = dat[K_bin]
+avg = np.average(frame)
+
+if avg_max:
+    cplot(frame,"binned star",vmin=0,  vmax=avg)
+else:
+    cplot(frame,"binned star",vmin=0,  vmax=p*frame.max())
+    
+
+    
+    
+# =============================================================================
+# Binned ref star
+# =============================================================================
+
+dat = pipeline.get_data("binned_ref")
+wav = pipeline.get_attribute("binned_ref","WAV_ARR",static=False)[0].astype(np.float32)
+N = dat[:,0,0].size
+avg = np.zeros(N)
+std = np.zeros(N)
+for i in np.arange(N):
+    avg[i] = np.average(dat[i])
+    std[i] = np.std(dat[i])
+plt.scatter(wav,avg,s=1)
+plt.title("Average flux vs wavelength: binned ref")
+plt.show()
+plt.scatter(wav,std,s=1)
+plt.title("Std of flux vs wavelength: binned ref")
+plt.show()
+
+frame = dat[K_bin]
+avg = np.average(frame)
+
+if avg_max:
+    cplot(frame,"Binned ref star",vmin=0,  vmax=avg)
+else:
+    cplot(frame,"Binned ref star",vmin=0,  vmax=p*frame.max())
+    
+# =============================================================================
+# Binned ref star aligned
+# =============================================================================
+
+dat = pipeline.get_data("binned_ref_al")
+wav = pipeline.get_attribute("binned_ref_al","WAV_ARR",static=False)[0].astype(np.float32)
+N = dat[:,0,0].size
+avg = np.zeros(N)
+std = np.zeros(N)
+for i in np.arange(N):
+    avg[i] = np.average(dat[i])
+    std[i] = np.std(dat[i])
+plt.scatter(wav,avg,s=1)
+plt.title("Average flux vs wavelength: binned ref aligned")
+plt.show()
+plt.scatter(wav,std,s=1)
+plt.title("Std of flux vs wavelength: binned ref aligned")
+plt.show()
+
+frame = dat[K_bin]
+avg = np.average(frame)
+
+if avg_max:
+    cplot(frame,"Binned ref star aligned",vmin=0,  vmax=avg)
+else:
+    cplot(frame,"Binned ref star aligned",vmin=0,  vmax=p*frame.max())
 
 # =============================================================================
 # Residual
@@ -310,7 +397,7 @@ plt.scatter(wav,std,s=1)
 plt.title("Std of flux vs wavelength: Residual")
 plt.show()
 
-frame = dat[K]
+frame = dat[K_bin]
 avg = np.average(frame)
 
 if avg_max:
@@ -326,3 +413,15 @@ print(f'Wavelength = {wav[K]}')
 #     avg = np.average(frame)
 
 #     cplot(frame,"Residual of simple star subtraction", vmax=avg)
+
+
+# =============================================================================
+# Checking some parameters
+# =============================================================================
+sci = pipeline.get_data("binned")
+ref = pipeline.get_data("binned_ref")
+al = pipeline.get_data("binned_ref_al")
+cplot((sci-ref)[K_bin],"1:1",vmax=p*(sci-ref)[K_bin].max())
+cplot((sci+ref)[K_bin],"1:3",vmin=0,vmax=0.1*p*(sci+ref)[K_bin].max())
+cplot((sci-al)[K_bin],"al",vmax=p*(sci-al)[K_bin].max())
+cplot((ref-al)[K_bin],"ref",vmax=p*(ref-al)[K_bin].max())
