@@ -355,8 +355,8 @@ else:
 # Binned ref star aligned
 # =============================================================================
 
-dat = pipeline.get_data("binned_ref_al")
-wav = pipeline.get_attribute("binned_ref_al","WAV_ARR",static=False)[0].astype(np.float32)
+dat = pipeline.get_data("binned_ref_opt")
+wav = pipeline.get_attribute("binned_ref_opt","WAV_ARR",static=False)[0].astype(np.float32)
 N = dat[:,0,0].size
 avg = np.zeros(N)
 std = np.zeros(N)
@@ -420,7 +420,7 @@ print(f'Wavelength = {wav[K]}')
 # =============================================================================
 sci = pipeline.get_data("binned")
 ref = pipeline.get_data("binned_ref")
-al = pipeline.get_data("binned_ref_al")
+al = pipeline.get_data("binned_ref_opt")
 cplot((sci-ref)[K_bin],"1:1",vmax=p*(sci-ref)[K_bin].max())
 cplot((sci+ref)[K_bin],"1:3",vmin=0,vmax=0.1*p*(sci+ref)[K_bin].max())
 cplot((sci-al)[K_bin],"al",vmax=p*(sci-al)[K_bin].max())

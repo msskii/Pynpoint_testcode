@@ -120,10 +120,11 @@ pipeline.run_module("norm_ref")
 
 science = pipeline.get_data("sci_pad")
 
-dit_sci = pipeline.get_attribute("sci_pad","DIT",static=False)
+pixscale = pipeline.get_attribute("sci_pad","PIXSCALE",static=False)[0]
+dit_sci = pipeline.get_attribute("sci_pad","DIT",static=False)[0]
 
 ref = pipeline.get_data("normed_ref") # we use the reference star as psf template for the moment
-dit_ref = pipeline.get_attribute("normed_ref","DIT",static=False)
+dit_ref = pipeline.get_attribute("normed_ref","DIT",static=False)[0]
 
 
 p = np.array([1.15504083e-08, -1.70009986e-06, 8.73285027e-05, -2.16106801e-03,
@@ -171,7 +172,7 @@ flux_ratio = mag2flux_ratio(14)
 print("Brightness of fake planets in mag: " + str(flux_ratio_mag))
 print("Planet-to-star flux ratio: " + str(flux_ratio))
 
-num_fake_planets = 6
+num_fake_planets = 3
 
 contrast_instance.design_fake_planet_experiments(
     flux_ratios=flux_ratio,
@@ -183,10 +184,6 @@ contrast_instance.design_fake_planet_experiments(
 # =============================================================================
 
 from applefy.wrappers.JWSTpynpoint_wrap import JWSTSimpleSubtractionPynPoint
-
-working_place_in = "/Users/Gian/Documents/GitHub/Pynpoint_testcode/MRS_PSF_subtraction_FS23/Data_cube_input"
-star_dir = "/Users/Gian/Documents/JWST_Central-Database/Reduced_cubes/cubes_obs3_red_red"
-pca_dir = "/Users/Gian/Documents/JWST_Central-Database/Reduced_cubes/cubes_obs9_red_red"
 
 algorithm_function = JWSTSimpleSubtractionPynPoint(
     scratch_dir=working_place_in)
@@ -221,7 +218,7 @@ contrast_curves, contrast_errors = contrast_instance.compute_analytic_contrast_c
     statistical_test=statistical_test,
     confidence_level_fpf=gaussian_sigma_2_fpf(5),
     num_rot_iter=20,
-    pixel_scale=0.02718)
+    pixel_scale=pixscale)
 
 
 

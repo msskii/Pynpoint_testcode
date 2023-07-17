@@ -39,6 +39,8 @@ from pynpoint import Pypeline, WavelengthReadingModule, FitsReadingModule, \
 from scratch_primaryhducombiner import hducollapser
 from plotter import cplot
 
+import time
+
 # pdb.set_trace()
 
 file_path = '/Users/Gian/Documents/GitHub/Pynpoint_testcode/Data/input/Level3_ch1-long_s3d.fits'
@@ -51,13 +53,13 @@ out_path = '/Users/Gian/Documents/GitHub/Pynpoint_testcode/Data/output/cubes_obs
 pipeline = Pypeline(work_path, in_path, out_path)
 # pdb.set_trace()
 reader = MultiChannelReader(name_in="reader", 
-                            input_dir='/Users/Gian/Documents/JWST_Central-Database/Reduced_cubes/cubes_obs3_red_red',
+                            input_dir='/Users/Gian/Documents/JWST_Central-Database/Reduced_cubes/cubes_obs22_useful',
                             image_tag="cube3")
 pipeline.add_module(reader)
 pipeline.run_module("reader")
 
 reader2 = MultiChannelReader(name_in="reader2", 
-                            input_dir='/Users/Gian/Documents/JWST_Central-Database/Reduced_cubes/cubes_obs9_red_red',
+                            input_dir='/Users/Gian/Documents/JWST_Central-Database/Reduced_cubes/cubes_obs23_useful',
                             image_tag="cube9")
 pipeline.add_module(reader2)
 pipeline.run_module("reader2")
@@ -72,7 +74,7 @@ pipeline.run_module("puddle")
 # =============================================================================
 # Center and Normalize science target
 # =============================================================================
-
+start = time.time()
 
 dat = pipeline.get_data("cube3_p")
 
@@ -125,6 +127,10 @@ pipeline.run_module("bin_ref")
 module = IFS_RefStarAlignment(name_in="align", sci_in_tag="binned", ref_in_tags="binned_ref", fit_out_tag_suff="al")
 pipeline.add_module(module)
 pipeline.run_module("align")
+
+stop = time.time()
+print("––––––––––––––––––––––––––––\n")
+print("TIME: ", stop-start)
 
 module = IFS_ClassicalRefSubstraction(name_in="subtr", image_in_tags=["binned","binned_ref_al"], image_out_tag="residual")
 pipeline.add_module(module)
