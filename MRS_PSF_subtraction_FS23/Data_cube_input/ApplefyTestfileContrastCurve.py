@@ -1,7 +1,10 @@
 """
 Test file for applefy compatibility with JWST data
 """
-
+import sys
+sys.path.append("/Users/Gian/Documents/Github/Pynpoint_ifs/background_files")
+sys.path.append('/Users/Gian/Documents/GitHub/Pynpoint')
+sys.path.append("/Users/Gian/Documents/GitHub/applefy")
 from pathlib import Path
 
 import numpy as np
@@ -90,7 +93,7 @@ contrast_instance.design_fake_planet_experiments(
 # Step 2: Run fake planet experiments
 # =============================================================================
 
-from applefy.wrappers.pynpoint import MultiComponentPCAPynPoint
+from applefy.wrappers.pynpoint_wrap import MultiComponentPCAPynPoint
 
 components = [5, 10, 20, 30, 50, 75, 100]
 

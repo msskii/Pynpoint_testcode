@@ -63,12 +63,10 @@ input_place_in = "/Users/Gian/Documents/JWST_Central-Database/Full_cubes/1536/cu
 output_place_in = "/Users/Gian/Documents/GitHub/Pynpoint_testcode/Data/output"
 
 working_place_in = "/Users/Gian/Documents/GitHub/Pynpoint_testcode/MRS_PSF_subtraction_FS23/Data_cube_input"
-star_dir = "/Users/Gian/Documents/JWST_Central-Database/Short_cubes/cubes_obs9_min"
-pca_dir = "/Users/Gian/Documents/JWST_Central-Database/Short_cubes/cubes_obs1_min"
-psf_dir_preamble = "/Users/Gian/Documents/JWST_Central-Database/Short_cubes/cubes_obs"
-psf_dir_ending = "_min"
-star_name_temp = star_dir.split('/')[-1].split('_')[0:2]
-star_name = star_name_temp[0]+"_"+star_name_temp[1]
+star_dir = "/Users/Gian/Documents/JWST_Central-Database/Reduced_cubes/cubes_obs3_min"
+pca_dir = "/Users/Gian/Documents/JWST_Central-Database/Reduced_cubes/cubes_obs9_min"
+
+
 
 pipeline = Pypeline(working_place_in, input_place_in, output_place_in)
 
@@ -219,15 +217,8 @@ contrast_instance.design_fake_planet_experiments(
 
 from applefy.wrappers.JWSTpynpoint_wrap_unopt import JWSTSimpleSubtractionPynPoint_unopt
 
-# psf_cube_nrs = list(map(str,[1,2,3,4,5,6,7,8,9,14,15,16,17,18,22,23,24]))
-psf_cube_nrs = list(map(str,[18, 22, 5]))
-psf_dirs = [psf_dir_preamble+nr+psf_dir_ending for nr in psf_cube_nrs]
-
 algorithm_function = JWSTSimpleSubtractionPynPoint_unopt(
-    scratch_dir=working_place_in,
-    psf_dir=pca_dir,
-    #psf_list=psf_dirs,
-    access_pipeline=True)
+    scratch_dir=working_place_in)
 
 contrast_instance.run_fake_planet_experiments(
     algorithm_function=algorithm_function,
@@ -255,7 +246,7 @@ statistical_test = TTest()
 
 # statistical_test = LaplaceBootstrapTest.construct_from_json_file("/Users/Gian/Documents/Github/Pynpoint_testcode/Data/input/Testforapplefy/"+"laplace_lookup_tables.csv")
 
-contrast_curves, contrast_errors, pipeline2 = contrast_instance.compute_analytic_contrast_curves(
+contrast_curves, contrast_errors = contrast_instance.compute_analytic_contrast_curves(
     statistical_test=statistical_test,
     confidence_level_fpf=gaussian_sigma_2_fpf(5),
     num_rot_iter=20,
@@ -277,8 +268,9 @@ best_contrast_errors = contrast_errors.values[np.arange(len(best_idx)), best_idx
 
 # Find one color for each number of PCA components used.
 import seaborn as sns
-colors = sns.color_palette("Spectral",
-    n_colors=len(contrast_curves.columns)) # "rocket_r"
+colors = sns.color_palette(
+    "rocket_r",
+    n_colors=len(contrast_curves.columns))
 colors
 
 separations_arcsec = contrast_curves.reset_index(level=0).index
@@ -295,7 +287,7 @@ i = 0 # color picker
 
 for tmp_model in contrast_curves.columns:
 
-    num_components = tmp_model.split('_')[1]+'_'+tmp_model.split('_')[2]
+    num_components = "Residuals"
     tmp_flux_ratios = contrast_curves.reset_index(
         level=0)[tmp_model].values
     tmp_errors = contrast_errors.reset_index(
@@ -327,9 +319,7 @@ axis_contrast_curvse.plot(
 
 # ------------- Double axis and limits -----------------------
 from scipy import interpolate
-low = flux_ratio2mag(np.min(contrast_curves.values[1:20]))
-high = flux_ratio2mag(np.max(contrast_curves.values[1:20]))
-lim_mag_y = (low+0.15*low, high + 0.15*high)
+lim_mag_y = (4, -6)
 lim_arcsec_x = (0.1, 2.8)
 sep_lambda_arcse = interpolate.interp1d(
     separations_arcsec,
@@ -382,7 +372,7 @@ axis_contrast_curvse_mag.tick_params(
     axis='both', which='major', labelsize=14)
 
 axis_contrast_curvse_mag.set_title(
-    r"$5 \sigma_{\mathcal{N}}$ Contrast Curves for "+ star_name,
+    r"$5 \sigma_{\mathcal{N}}$ Contrast Curves",
     fontsize=18, fontweight="bold", y=1.1)
 
 # --------------------------- Legend -----------------------
@@ -393,7 +383,7 @@ leg1 = fig.legend(handles, labels,
                   bbox_to_anchor=(0.12, -0.08),
                   fontsize=14,
                   title="# PCA components",
-                  loc='lower left', ncol=4)
+                  loc='lower left', ncol=8)
 
 _=plt.setp(leg1.get_title(),fontsize=14)
 plt.show()
