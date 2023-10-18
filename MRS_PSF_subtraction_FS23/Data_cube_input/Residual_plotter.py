@@ -37,12 +37,11 @@ from ifustacksubset import CrossCorrelationPreparationModule
 from ifucrosscorrelation import CrossCorrelationModule
 from ifupcasubtraction import IFUResidualsPCAModule
 from ifuresizing import UnfoldingModule
-from IFS_basic_subtraction import IFS_ClassicalRefSubstraction
 
 from pynpoint import Pypeline, WavelengthReadingModule, FitsReadingModule, FitCenterModule, RemoveLinesModule, StackCubesModule, BadPixelSigmaFilterModule, ParangReadingModule, AddLinesModule, FitsWritingModule, TextWritingModule
 from pynpoint import MultiChannelReader, ShiftImagesModule, PaddingModule
 from IFS_Plot import PlotCenterDependantWavelength, PlotSpectrum
-from IFS_SimpleSubtraction import IFS_normalizeSpectrum
+from IFS_SimpleSubtraction import IFS_normalizeSpectrum, IFS_ClassicalRefSubstraction
 
 from plotter import plot, cplot
 import matplotlib.pyplot as plt

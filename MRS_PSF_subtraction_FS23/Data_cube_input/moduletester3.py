@@ -26,10 +26,9 @@ from ifucrosscorrelation import CrossCorrelationModule
 from ifupcasubtraction import IFUResidualsPCAModule
 from ifuresizing import UnfoldingModule
 from jwstframeselection import SelectWavelengthCenterModuleJWST
-from IFS_basic_subtraction import IFS_ClassicalRefSubstraction
 from center_guess import IFS_RefStarAlignment#, StarCenterFixedGauss
 # from center_guess_rev import StarCenterFixedGauss
-from IFS_SimpleSubtraction import IFS_normalizeSpectrum, IFS_binning, IFS_collapseBins
+from IFS_SimpleSubtraction import IFS_normalizeSpectrum, IFS_ClassicalRefSubstraction, IFS_binning, IFS_collapseBins
 
 from pynpoint import Pypeline, WavelengthReadingModule, FitsReadingModule, \
                     FitCenterModule, ShiftImagesModule, RemoveLinesModule, StackCubesModule, \
